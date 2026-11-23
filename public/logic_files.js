@@ -89,6 +89,7 @@ async function loadDirectory(path) {
         }
 
         if (data.responseStatus === 'OK') {
+            if (window.fmOnDirLoaded) window.fmOnDirLoaded(path, data);
             renderFiles(data.dirs, data.files, data.ini);
         } else {
             els.container.innerHTML = `<div style="text-align:center; padding:20px;">שגיאה: ${data.message || 'לא ניתן לטעון נתונים'}</div>`;
@@ -212,6 +213,12 @@ function createCard(type, name, path, meta = null) {
             ${extraInfo}
         </div>
     `;
+
+    // נתונים עבור פעולות הקבצים (בחירה, העתקה, גזירה וכו') - logic_fm_actions.js
+    div.dataset.path = path;
+    div.dataset.name = name;
+    div.dataset.kind = type === 'folder' ? 'dir' : 'file';
+    if (window.fmDecorateCard) window.fmDecorateCard(div);
 
     return div;
 }

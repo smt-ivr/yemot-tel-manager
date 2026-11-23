@@ -1,0 +1,134 @@
+/* ===== סרגל כלים ופעולות קבצים (logic_fm_actions.js) ===== */
+
+.fm-toolbar { gap: 10px; flex-wrap: wrap; }
+.fm-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.fm-actions-bar, .fm-selection-bar {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+
+.fm-tb-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--fm-border); background: white; color: #444;
+    padding: 6px 10px; border-radius: 4px; cursor: pointer;
+    font-family: inherit; font-size: 0.85rem; font-weight: 600; transition: 0.15s;
+}
+.fm-tb-btn:hover:not(:disabled) { background: #f1f5f9; border-color: #cbd5e1; }
+.fm-tb-btn:disabled { opacity: 0.4; cursor: default; }
+.fm-tb-btn.primary { background: var(--fm-primary); border-color: var(--fm-primary); color: white; }
+.fm-tb-btn.primary:hover:not(:disabled) { background: var(--fm-primary-dark); }
+.fm-tb-btn.danger { color: #dc2626; }
+.fm-tb-btn.danger:hover:not(:disabled) { background: #fee2e2; border-color: #fca5a5; }
+.fm-tb-btn.has-items { background: #fff7ed; border-color: #fdba74; color: #c2410c; }
+.fm-tb-sep { width: 1px; height: 22px; background: var(--fm-border); margin: 0 2px; }
+
+.fm-selection-bar {
+    padding: 6px 15px; background: #eff6ff; border-bottom: 1px solid #bfdbfe; flex-shrink: 0;
+}
+.fm-sel-count { font-weight: 700; color: #1d4ed8; font-size: 0.9rem; margin-left: 8px; }
+
+/* כרטיסים: בחירה וגזירה */
+.fm-select-box {
+    position: absolute; top: 6px; right: 6px; width: 16px; height: 16px;
+    cursor: pointer; z-index: 3; opacity: 0; transition: opacity 0.15s; accent-color: var(--fm-primary);
+}
+.fm-more-btn {
+    position: absolute; top: 3px; left: 3px; z-index: 3;
+    border: none; background: transparent; color: #94a3b8;
+    width: 24px; height: 24px; border-radius: 4px; cursor: pointer; opacity: 0; transition: 0.15s;
+}
+.fm-more-btn:hover { background: #e2e8f0; color: #334155; }
+.fm-item:hover .fm-select-box, .fm-item:hover .fm-more-btn,
+.fm-item.selected .fm-select-box, .fm-grid.has-selection .fm-select-box { opacity: 1; }
+@media (hover: none) { .fm-select-box, .fm-more-btn { opacity: 1; } }
+
+.fm-item.selected {
+    border-color: var(--fm-primary); background: #eff6ff;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.35);
+}
+.fm-item.selected .fm-item-icon-area, .fm-item.selected .fm-item-details { background: #eff6ff; }
+.fm-item.cut-pending { opacity: 0.45; border-style: dashed; }
+
+/* גרירת קבצים */
+.fm-scroll-container.fm-drop-active {
+    outline: 3px dashed var(--fm-primary); outline-offset: -10px; background: #eff6ff;
+}
+.fm-scroll-container.fm-drop-active::after {
+    content: "שחרר כאן כדי להעלות את הקבצים לתיקייה";
+    position: sticky; bottom: 20px; display: block; width: fit-content; margin: 20px auto 0;
+    background: var(--fm-primary); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 700;
+}
+
+/* תפריט קליק ימני */
+.fm-context-menu {
+    position: fixed; z-index: 3000; min-width: 210px; padding: 5px;
+    background: white; border: 1px solid #e2e8f0; border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); direction: rtl;
+}
+.fm-cm-item {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 8px 10px; border: none; background: none; border-radius: 5px;
+    font-family: inherit; font-size: 0.9rem; color: #334155; cursor: pointer; text-align: right;
+}
+.fm-cm-item i { width: 16px; text-align: center; color: #64748b; }
+.fm-cm-item span { flex: 1; }
+.fm-cm-item kbd { font-family: inherit; font-size: 0.7rem; color: #94a3b8; direction: ltr; }
+.fm-cm-item:hover { background: #f1f5f9; }
+.fm-cm-item.danger, .fm-cm-item.danger i { color: #dc2626; }
+.fm-cm-item.danger:hover { background: #fee2e2; }
+.fm-cm-sep { height: 1px; background: #e2e8f0; margin: 4px 0; }
+
+/* דיאלוגים */
+.fm-dialog { z-index: 2500; }
+.fm-dialog-box { width: 460px; max-width: 94%; max-height: 90vh; }
+.fm-dialog-box.wide { width: 640px; }
+.dlg-body { gap: 14px; }
+.dlg-group { margin: 0; }
+.dlg-group label { font-size: 0.92rem; }
+.dlg-check { display: flex; align-items: center; gap: 8px; }
+.dlg-check label { margin: 0; font-weight: 500; cursor: pointer; }
+.dlg-check input { width: 16px; height: 16px; accent-color: var(--fm-primary); }
+.dlg-hint { font-size: 0.78rem; color: #64748b; margin-top: 4px; }
+.dlg-message { white-space: pre-line; line-height: 1.6; color: #334155; }
+.fm-input.rtl, .fm-textarea.rtl { direction: rtl; text-align: right; font-family: inherit; }
+.dlg-select { font-family: inherit; direction: rtl; text-align: right; }
+.dlg-textarea { min-height: 120px; height: 140px; resize: vertical; }
+.fm-btn-danger { background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 0.95rem; cursor: pointer; }
+.fm-btn-danger:hover { background: #b91c1c; }
+.fm-btn-primary:hover { background: var(--fm-primary-dark); }
+
+/* הודעות */
+#fmToastBox {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 4000; display: flex; flex-direction: column; gap: 8px; align-items: center;
+    width: max-content; max-width: calc(100% - 32px);
+}
+.fm-toast {
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    background: #1e293b; color: white; border-radius: 6px; font-size: 0.92rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); animation: fmToastIn 0.25s ease; white-space: pre-line;
+}
+.fm-toast.ok i { color: #4ade80; }
+.fm-toast.info i { color: #60a5fa; }
+.fm-toast.error { background: #7f1d1d; }
+.fm-toast.error i { color: #fca5a5; }
+.fm-toast.out { opacity: 0; transform: translateY(10px); transition: 0.3s; }
+@keyframes fmToastIn { from { opacity: 0; transform: translateY(10px); } }
+
+/* התקדמות העלאה */
+.fm-progress {
+    position: fixed; bottom: 20px; right: 20px; z-index: 4000; width: 320px; max-width: calc(100% - 32px);
+    background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+.fm-progress-text { font-size: 0.85rem; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fm-progress-bar { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.fm-progress-bar div { height: 100%; width: 0; background: var(--fm-primary); transition: width 0.3s; }
+
+/* מסך צר */
+@media (max-width: 760px) {
+    .fm-tb-btn span { display: none; }
+    .fm-tb-btn { padding: 7px 10px; }
+    .fm-toolbar { padding: 8px 10px; }
+    .main-layout.full-screen-layout { margin: 10px; }
+}
