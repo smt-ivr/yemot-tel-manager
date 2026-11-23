@@ -1,0 +1,119 @@
+/* ===== התאמה למסכים צרים (טאבלט וטלפון) ===== */
+
+html, body { max-width: 100%; overflow-x: hidden; }
+.dashboard-wrapper { height: 100vh; height: 100dvh; }
+.main-layout.full-screen-layout { flex: 1; min-height: 0; height: auto; }
+
+/* חלון המאזינים - גם במסך בינוני */
+.fixed-size-modal { max-width: 95vw; }
+.listeners-body-container { overflow: auto; }
+
+/* ---------- טאבלט ---------- */
+@media (max-width: 1100px) {
+    .main-header {
+        grid-template-columns: auto 1fr;
+        grid-template-areas: "brand side" "info info";
+        row-gap: 6px; padding: 8px 12px;
+    }
+    .header-section.right { grid-area: brand; border-left: none; padding-left: 0; }
+    .header-section.left { grid-area: side; border-right: none; padding-right: 0; }
+    .header-section.center { grid-area: info; padding: 0; }
+    .left-box-container { align-items: flex-end; }
+    .bottom-status-row { justify-content: flex-end; }
+}
+
+/* ---------- טלפון ---------- */
+@media (max-width: 760px) {
+    /* כותרת */
+    .main-header { gap: 6px 8px; padding: 8px 10px; }
+    .header-logo-img { height: 34px; margin: 0; }
+    .nav-logo { gap: 8px; }
+    .main-title { font-size: 0.85rem; }
+    .sub-title { display: none; }
+
+    .user-info-row { gap: 6px; flex-wrap: nowrap; }
+    .token-wrapper { width: auto; padding: 0 6px; }
+    .token-wrapper input, .token-wrapper .key-icon,
+    .token-wrapper .token-actions .sep,
+    .token-wrapper .token-actions button:first-child { display: none; }
+    .acc-current { max-width: 150px; }
+    .acc-current-name { max-width: 90px; }
+    .acc-menu { position: fixed; top: 56px; left: 10px; right: 10px; width: auto; max-width: none; }
+
+    .bottom-status-row { flex-wrap: wrap; gap: 4px; white-space: normal; }
+    .auth-badge { display: none !important; }
+
+    .header-section.center { flex-direction: column; gap: 6px; align-items: stretch; }
+    #reseller-logo-placeholder:empty { display: none; }
+    #reseller-logo-placeholder { text-align: center; }
+    .header-rows-wrapper { gap: 4px; }
+    .header-row { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; padding-bottom: 1px; }
+    .header-row::-webkit-scrollbar { display: none; }
+    .detail-chip, .live-listeners-chip { flex-shrink: 0; }
+
+    /* אזור עבודה */
+    .main-layout.full-screen-layout { margin: 8px; }
+    .card-header-tabs { padding: 0 10px; gap: 12px; }
+    .tab-item { padding: 11px 4px; font-size: 0.95rem; }
+
+    .fm-toolbar { padding: 6px 8px; }
+    .fm-breadcrumbs { width: 100%; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .fm-breadcrumbs::-webkit-scrollbar { display: none; }
+    .fm-actions { width: 100%; justify-content: flex-start; flex-wrap: nowrap; }
+    .fm-actions-bar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+    .fm-actions-bar::-webkit-scrollbar { display: none; }
+    .fm-selection-bar { padding: 6px 8px; flex-wrap: nowrap; overflow-x: auto; }
+    .fm-sel-count { white-space: nowrap; font-size: 0.8rem; }
+    .fm-tb-btn, .fm-btn-icon { min-height: 36px; min-width: 36px; justify-content: center; flex-shrink: 0; }
+
+    .fm-scroll-container { padding: 8px; }
+    .fm-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+    .fm-item { height: auto; min-height: 120px; }
+    .fm-item:hover { transform: none; }
+    .fm-item-icon-area { font-size: 1.8rem; min-height: 54px; }
+    .fm-select-box { width: 20px; height: 20px; }
+    .fm-more-btn { width: 30px; height: 30px; }
+
+    /* חלונות */
+    .fm-modal-content.large-modal, .fm-modal-content.audio-modal, .fm-dialog-box, .fm-dialog-box.wide {
+        width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; border-radius: 0;
+    }
+    .fm-modal-content.audio-modal { height: auto !important; border-radius: 12px; width: 94% !important; }
+    .fm-modal-header, .fm-modal-footer { border-radius: 0; padding: 10px 14px; }
+    .fm-modal-body { padding: 14px; }
+    .fm-textarea { min-height: 200px; font-size: 0.95rem; }
+    .fm-modal-footer { flex-wrap: wrap; }
+    .fm-modal-footer button { flex: 1; min-height: 42px; }
+    .warning-box { margin-bottom: 10px; font-size: 0.85rem; }
+
+    .ymgr-toolbar { padding: 8px 10px; }
+    .ymgr-tools-left, .ymgr-tools-right { flex-wrap: wrap; width: 100%; }
+    .ymgr-tools-right { gap: 6px; }
+    .ymgr-tools-right .fm-btn-secondary { flex: 1; padding: 8px 6px; font-size: 0.8rem; }
+    .search-box { max-width: none; }
+    #conf-view .ymgr-table-wrapper { overflow-x: auto; }
+    #conf-view .ymgr-tools-left select { width: 100% !important; }
+
+    .fixed-size-modal { width: 100%; max-width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+    .listeners-header { height: auto; padding: 10px 14px; }
+    .listeners-header h3 { font-size: 1.05rem; }
+    .status-pill { font-size: 0.8rem; }
+    .fixed-table { table-layout: auto; min-width: 640px; }
+    .fixed-table thead th, .fixed-table tbody td { padding: 10px 12px; font-size: 0.9rem; }
+
+    .modal-box { width: 92%; max-width: 92%; }
+
+    /* מסך התחברות */
+    .login-wrapper { height: 100dvh; padding: 12px; box-sizing: border-box; }
+    .login-box { width: 100%; max-width: 380px; height: auto; min-height: 480px; }
+    .login-body { padding: 22px; }
+    .simple-input { font-size: 16px; } /* מונע זום אוטומטי באייפון */
+
+    #fmToastBox { bottom: 12px; }
+    .fm-progress { right: 10px; left: 10px; width: auto; bottom: 12px; }
+}
+
+@media (max-width: 380px) {
+    .main-title { display: none; }
+    .fm-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); }
+}

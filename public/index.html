@@ -2,12 +2,14 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ניהול מערכת טלפונית</title>
     <link rel="icon" type="image/png" href="smt.png"> 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style_files.css">
     <link rel="stylesheet" href="style_fm_actions.css">
+    <link rel="stylesheet" href="style_accounts.css">
+    <link rel="stylesheet" href="style_mobile.css">
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -50,7 +52,7 @@
             <div class="modal-body">
                 <p>החיבור לשרת נותק (הטוקן פג תוקף או מנותק). יש להתחבר מחדש.</p>
                 <div class="mfa-link-container">
-                    <button class="mfa-btn" onclick="logout()" style="background: #ef4444; border: none;">התנתק והתחבר</button>
+                    <button class="mfa-btn" onclick="window.accounts ? accounts.reloginCurrent() : logout()" style="background: #ef4444; border: none;">התחבר מחדש</button>
                 </div>
             </div>
         </div>
@@ -118,7 +120,7 @@
                     <img src="smt.png" alt="SMT Logo" class="header-logo-img" draggable="false" oncontextmenu="return false;">
                     <div class="brand-text">
                         <span class="main-title">ניהול מערכת טלפונית</span>
-                        <span class="sub-title">פותח ע"י S.M.T | גירסא: V1.2</span>
+                        <span class="sub-title">פותח ע"י S.M.T | גירסא: V1.3</span>
                     </div>
                 </div>
             </div>
@@ -317,6 +319,7 @@
     </div>
 
     <script src="logic_ui.js"></script>
+    <script src="logic_accounts.js"></script>
     <script src="logic_auth.js"></script>
     <script src="ext_types.js"></script>
     <script src="logic_files.js"></script>

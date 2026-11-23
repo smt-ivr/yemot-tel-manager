@@ -1,0 +1,64 @@
+/* ===== בורר מערכות (logic_accounts.js) ===== */
+
+.acc-switcher { position: relative; flex-shrink: 1; min-width: 0; }
+
+.acc-current {
+    display: flex; align-items: center; gap: 8px;
+    height: 32px; max-width: 230px; padding: 0 10px;
+    background: #1e293b; color: #f1f5f9; border: 1px solid #1e293b;
+    border-radius: 6px; cursor: pointer; font-family: inherit; transition: 0.15s;
+}
+.acc-current:hover { background: #334155; }
+.acc-icon { color: #93c5fd; font-size: 0.85rem; flex-shrink: 0; }
+.acc-current-text { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; line-height: 1.05; }
+.acc-current-name { font-weight: 700; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+.acc-current-id { font-size: 0.65rem; color: #94a3b8; direction: ltr; }
+.acc-count {
+    background: #2563eb; color: white; font-size: 0.65rem; font-weight: 700;
+    min-width: 18px; height: 18px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px;
+}
+.acc-caret { font-size: 0.65rem; color: #94a3b8; }
+
+.acc-menu {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 3000;
+    width: 290px; max-width: calc(100vw - 20px);
+    background: white; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18); padding: 6px; direction: rtl;
+}
+.acc-menu-title { font-size: 0.75rem; font-weight: 700; color: #64748b; padding: 6px 8px 4px; }
+.acc-list { max-height: 50vh; overflow-y: auto; }
+
+.acc-row { display: flex; align-items: center; border-radius: 6px; }
+.acc-row:hover { background: #f1f5f9; }
+.acc-row.active { background: #eff6ff; }
+.acc-pick {
+    flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0;
+    padding: 8px; background: none; border: none; cursor: pointer; text-align: right; font-family: inherit;
+}
+.acc-pick > i { color: #cbd5e1; font-size: 0.9rem; }
+.acc-row.active .acc-pick > i { color: #2563eb; }
+.acc-row.expired .acc-pick > i { color: #f59e0b; }
+.acc-row-text { display: flex; flex-direction: column; min-width: 0; }
+.acc-row-name { font-weight: 700; font-size: 0.9rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acc-row-sub { font-size: 0.72rem; color: #64748b; }
+.acc-remove {
+    background: none; border: none; color: #94a3b8; cursor: pointer;
+    width: 30px; height: 30px; border-radius: 6px; flex-shrink: 0;
+}
+.acc-remove:hover { background: #fee2e2; color: #dc2626; }
+
+.acc-add {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    margin-top: 6px; padding: 9px; border: 1px dashed #93c5fd; border-radius: 6px;
+    background: #f8fbff; color: #1d4ed8; font-weight: 700; font-family: inherit; font-size: 0.9rem; cursor: pointer;
+}
+.acc-add:hover { background: #eff6ff; border-style: solid; }
+
+/* מסך התחברות במצב הוספת מערכת */
+.acc-back-btn {
+    display: none; margin-top: 14px; width: 100%; padding: 10px;
+    background: none; border: 1px solid #cbd5e1; border-radius: 6px;
+    color: #334155; font-family: inherit; font-weight: 600; cursor: pointer;
+}
+.acc-back-btn:hover { background: #f1f5f9; }
+.login-wrapper.adding-account .acc-back-btn { display: flex; align-items: center; justify-content: center; gap: 8px; }

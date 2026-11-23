@@ -125,9 +125,10 @@ function initAutoLogin() {
         return; 
     }
 
-    const savedToken = localStorage.getItem('ym_token');
+    const savedToken = window.accountsGetActiveToken ? window.accountsGetActiveToken() : localStorage.getItem('ym_token');
     if (savedToken) {
-        verifyAndLogin(savedToken, true, true);
+        const savedAcc = window.accounts ? window.accounts.current() : null;
+        verifyAndLogin(savedToken, savedAcc ? savedAcc.persist : true, true);
     } else {
         hideSplashAndShowLogin();
     }
@@ -178,6 +179,8 @@ async function performLogin(isSilent = false) {
     const pass = document.getElementById('password').value;
     const remember = document.getElementById('remember').checked;
 
+    window.lastLoginUsername = user;
+
     if (!user || !pass) {
         if (!isSilent) showStatus("נא להזין מספר וסיסמה", "error");
         else hideSplashAndShowLogin();
@@ -216,6 +219,7 @@ async function loginWithTokenInput() {
         showStatus("נא להזין טוקן", "error");
         return;
     }
+    window.lastLoginUsername = null;
     setLoading(true, 'token-login-btn'); 
     await verifyAndLogin(token, true, false);
 }
@@ -269,6 +273,7 @@ function handleInvalidToken(data, isSilent = false) {
     setLoading(false, 'token-login-btn');
     
     localStorage.removeItem('ym_token');
+    if (window.accountsOnInvalid) window.accountsOnInvalid(currentUserToken);
     
     if(isSilent) {
         hideSplashAndShowLogin();
@@ -279,6 +284,7 @@ function handleInvalidToken(data, isSilent = false) {
             status.className = 'status-msg default';
             txtEl.innerText = 'יש להכניס פרטי מערכת';
         }
+        if (window.accountsAfterInvalidUI) window.accountsAfterInvalidUI();
     } else {
         showLoginScreen(); 
         let msg = "שגיאה באימות הטוקן";
@@ -362,7 +368,7 @@ async function finalizeLogin(token, authData, rememberMe, isSilent = false) {
     if(!isSilent) showStatus("אימות הושלם! טוען נתונים...", "success");
 
     if (rememberMe) localStorage.setItem('ym_token', token);
-    else localStorage.removeItem('ym_token');
+    else if (localStorage.getItem('ym_token') === token) localStorage.removeItem('ym_token');
 
     const fullAuthData = {
         reason: authData.passReason,
@@ -379,9 +385,13 @@ async function finalizeLogin(token, authData, rememberMe, isSilent = false) {
             return;
         }
 
+        // רישום המערכת ברשימת המערכות (logic_accounts.js). true = הדף נטען מחדש
+        if (window.accountsOnLogin && window.accountsOnLogin(token, userData, rememberMe)) return;
+
         if(isSilent) hideSplashAndShowDashboard();
         
         initDashboardUI(userData, token, fullAuthData);
+        if (window.accounts) window.accounts.renderSwitcher();
 
     } catch (e) {
         if(!isSilent) showStatus("שגיאת רשת בטעינת נתונים", "error");
@@ -403,6 +413,9 @@ function logout() {
         fetch(`${API_BASE}/Logout?token=${token}`).catch(() => {});
     }
     
+    // אם יש מערכות נוספות ברשימה - עוברים לבאה בתור (logic_accounts.js)
+    if (window.accountsLogoutCurrent) return window.accountsLogoutCurrent(token);
+
     localStorage.removeItem('ym_token');
     location.reload();
 }
