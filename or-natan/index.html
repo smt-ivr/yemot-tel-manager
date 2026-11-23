@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>אתר העלאת קבצים</title>
+    <link rel="icon" href="smt.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <img src="smt.png" alt="לוגו" class="logo" draggable="false">
+        
+        <div class="header-titles">
+            <h1>אתר העלאת קבצים (שודרג)</h1>
+            <h2 id="welcomeMessage" class="hidden"></h2>
+        </div>
+
+        <div id="loginSection" class="section-active">
+            <div class="form-group">
+                <input type="password" id="passwordInput" placeholder="הכנס סיסמה" autocomplete="off">
+            </div>
+            <button id="loginBtn">התחבר</button>
+            <p id="loginError" class="error-msg"></p>
+        </div>
+
+        <div id="uploadSection" class="hidden">
+            <div class="info-box">
+                <div class="info-item">
+                    <span class="info-label">מעלה לנתיב:</span>
+                    <span id="displayPath" class="info-value"></span>
+                </div>
+                <div id="displayCopyPathContainer" class="info-item hidden">
+                    <span class="info-label">משכפל לנתיב:</span>
+                    <span id="displayCopyPath" class="info-value"></span>
+                </div>
+            </div>
+
+            <div id="fileSelectionArea">
+                <div class="form-group upload-area">
+                    <label for="fileInput" class="file-label" id="dropZone">
+                        <span class="file-icon">📁</span>
+                        <span class="file-text">לחץ כאן לבחירת קבצים להעלאה או גרור לכאן קבצים</span>
+                        <span class="file-subtext">(ניתן לבחור או לגרור מספר קבצים יחד, המערכת תומכת בקבצי וידאו ושמע בלבד)</span>
+                    </label>
+                    <input type="file" id="fileInput" multiple accept="audio/*,video/*">
+                    <p id="selectedFileName" class="selected-file-name"></p>
+                </div>
+
+                <button id="uploadBtn">התחל העלאה</button>
+            </div>
+
+            <div class="progress-container hidden" id="progressContainer">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+            
+            <p id="uploadStatus"></p>
+
+            <button id="resetBtn" class="hidden" style="margin-top: 15px; background: linear-gradient(135deg, #2ecc71, #27ae60);">בצע העלאה נוספת</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מנתח סקרים</title>
+    <link rel="icon" href="smt.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="questions.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center py-6 sm:py-8 px-4">
+
+    <div class="main-container mx-auto">
+        <div class="top-header-container">
+            <header class="header-card">
+                <div class="header-title-area flex-grow"> 
+                    <h1 class="header-title">מנתח סקרים למערכות IVR2</h1>
+                    <p class="header-subtitle">פיתוח מיוחד עבור קו וזכנו</p>
+                </div>
+                
+                <div id="authStatusContainer" class="hidden flex-col items-end mr-4 pl-4 border-r border-gray-200">
+                    <span class="text-sm font-bold text-green-600 mb-1"><i class="fas fa-shield-check mr-1"></i> מחובר</span>
+                    <span id="authReasonText" class="text-xs text-gray-500 max-w-[200px] text-left" dir="rtl"></span>
+                    <button id="disconnectButton" class="text-xs text-red-500 hover:text-red-700 underline mt-1 transition-colors">התנתק</button>
+                </div>
+
+                <button id="settingsButton" title="הגדרות" class="text-gray-500 hover:text-blue-600 transition-colors p-3 rounded-full hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    <i class="fas fa-cog fa-xl"></i>
+                </button>
+            </header>
+            <div class="credit-container flex items-center justify-center gap-2"> 
+                <span class="text-sm font-medium">פותח ע"י:</span>
+                <img src="smt.png" alt="S.M.T" style="max-height: 32px; width: auto;" draggable="false" oncontextmenu="return false;">
+            </div>
+        </div>
+
+        <div id="settingsModal" class="modal-overlay">
+            <div class="modal-content">
+                <button id="closeSettingsModalButton" class="modal-close-button" title="סגור">&times;</button>
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">הגדרות חיבור</h2>
+                
+                <div class="mb-4">
+                    <label for="systemNumberInput" class="block text-sm font-medium text-gray-700 mb-1">מספר מערכת</label>
+                    <input type="text" id="systemNumberInput" placeholder="הכנס מספר מערכת" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow text-sm shadow-sm">
+                </div>
+
+                <div class="mb-6">
+                    <label for="passwordInput" class="block text-sm font-medium text-gray-700 mb-1">סיסמא</label>
+                    <input type="password" id="passwordInput" placeholder="הכנס סיסמא" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow text-sm shadow-sm">
+                </div>
+
+                <div class="mb-6">
+                    <label for="surveyBasePathInput" class="block text-sm font-medium text-gray-700 mb-1">נתיב בסיס לסקר</label>
+                    <input type="text" id="surveyBasePathInput" placeholder="לדוגמה: ivr2:1/1/1" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow text-sm shadow-sm" style="direction: ltr; text-align: left;">
+                    <p class="text-xs text-gray-500 mt-1">הכנס את הנתיב עד לחלק שלפני מספר השאלה.</p>
+                </div>
+
+                <hr class="my-6 border-gray-200">
+
+                <div class="mb-8">
+                    <label for="numberOfQuestionsInput" class="block text-sm font-medium text-gray-700 mb-1">מספר שאלות להצגה</label>
+                    <input type="number" id="numberOfQuestionsInput" value="8" min="1" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow text-sm shadow-sm">
+                </div>
+                
+                <button id="saveSettingsButton" class="w-full button-primary text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-150 text-sm flex items-center justify-center">
+                    <i class="fas fa-save mr-2"></i>שמור והתחבר
+                </button>
+                <p id="settingsStatus" class="mt-4 text-xs text-center"></p>
+            </div>
+        </div>
+
+        <div id="mfaModal" class="modal-overlay">
+            <div class="modal-content !max-w-6xl !w-11/12 !p-0 overflow-hidden flex flex-col h-[85vh]">
+                <div class="bg-blue-600 text-white p-4 flex justify-between items-center shrink-0">
+                    <h3 class="font-bold text-lg">נדרש אימות דו-שלבי</h3>
+                    <button id="closeMfaModalBtn" class="text-white hover:text-gray-200 focus:outline-none text-2xl leading-none">&times;</button>
+                </div>
+                <div class="flex-grow relative">
+                    <div class="absolute inset-0 flex items-center justify-center -z-10">
+                        <div class="loader"></div>
+                    </div>
+                    <iframe id="mfaIframe" class="w-full h-full border-none z-10 bg-white" src=""></iframe>
+                </div>
+            </div>
+        </div>
+
+        <section id="controlsSection" class="mb-8 text-center">
+            <button id="loadSurveysButton" class="button-secondary text-white font-bold py-3.5 px-10 rounded-lg shadow-lg hover:shadow-xl transition-all duration-150 text-md transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center justify-center mx-auto">
+                <i class="fas fa-sync-alt mr-2.5"></i>טען / רענן נתוני סקר
+            </button>
+        </section>
+        
+        <div id="statusMessage" class="my-5 text-center font-medium status-message-area"></div>
+        <div id="loader" class="loader hidden"></div>
+
+        <main id="surveyResultsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl">
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

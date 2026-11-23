@@ -1,0 +1,162 @@
+body {
+    font-family: 'Noto Sans Hebrew', 'Arial', sans-serif;
+    scroll-behavior: smooth;
+    background-color: #f0f4f8; 
+}
+.main-container {
+    max-width: 1200px; /* הרחבה לתצוגת CRM רחבה ונוחה */
+    width: 100%;
+}
+.top-header-container { 
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: 1.5rem; 
+    gap: 1rem; 
+}
+.header-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem; 
+    padding: 1rem 1.5rem; 
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    flex-grow: 1; 
+}
+
+.header-title {
+    font-size: 1.5rem; 
+    line-height: 2rem; 
+    font-weight: 700; 
+    background: linear-gradient(45deg, #1e40af, #2563eb, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+.header-subtitle {
+    font-size: 0.8rem;
+    color: #6b7280; 
+    margin-top: -0.25rem;
+}
+@media (min-width: 640px) { 
+    .header-title { font-size: 1.85rem; line-height: 2.25rem; }
+    .header-subtitle { font-size: 0.875rem; }
+}
+.credit-container { 
+    text-align: center; 
+    font-size: 0.95rem; 
+    color: #374151; 
+    border: 1px solid #e5e7eb; 
+    padding: 0.75rem 1rem; 
+    border-radius: 0.5rem; 
+    background-color: #f9fafb; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    white-space: nowrap;
+    flex-shrink: 0; 
+}
+
+.question-card {
+    border: none; 
+    border-radius: 1rem; 
+    padding: 1.75rem; 
+    background-color: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+}
+.question-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.06);
+}
+.question-header { 
+    font-size: 1.15rem; font-weight: 600; color: #1e3a8a; margin-bottom: 1rem; line-height: 1.4; 
+}
+
+.total-votes-summary {
+    font-size: 0.85rem; font-weight: 500; color: #374151; background-color: #e0e7ff; 
+    padding: 0.4rem 0.8rem; border-radius: 0.375rem; margin-top: 0.5rem; margin-bottom: 1rem;
+    border: 1px solid #c7d2fe; text-align: center;
+}
+
+.loader {
+    border: 7px solid #e5e7eb; border-top: 7px solid #2563eb; border-radius: 50%;
+    width: 55px; height: 55px; animation: spin 0.9s linear infinite; margin: 35px auto;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.6); backdrop-filter: blur(2px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s linear 0s; }
+.modal-content {
+    background-color: #ffffff; padding: 2rem; border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); width: 90%; max-width: 500px; 
+    max-height: 90vh; overflow-y: auto; position: relative;
+    transform: scale(0.95); transition: transform 0.3s ease;
+}
+.modal-overlay.open .modal-content { transform: scale(1); }
+.modal-close-button {
+    position: absolute; top: 1rem; left: 1rem; background: none; border: none;
+    font-size: 1.5rem; color: #6b7280; cursor: pointer; padding: 0.25rem; line-height: 1;
+}
+.modal-close-button:hover { color: #1f2937; }
+
+/* מערכת CRM - עיצוב תשובות ופסי התקדמות */
+.answer-list { margin-bottom: 1rem; flex-grow: 1; }
+
+.answer-item-crm {
+    display: flex; flex-direction: column; align-items: stretch;
+    padding: 0.75rem 1rem; background-color: #f9fafb; border-radius: 0.5rem; 
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    border: 1px solid #e5e7eb;
+}
+.answer-item-crm:hover { background-color: #eff6ff; border-color: #93c5fd; }
+
+.answer-top-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.4rem;
+}
+.answer-text { font-size: 0.95rem; color: #1f2937; font-weight: 600; flex-grow: 1; margin-left: 0.75rem; }
+.answer-details { display: flex; align-items: baseline; gap: 0.5rem; flex-shrink: 0; }
+
+.percentage-value { font-size: 0.95rem; font-weight: 700; color: #1d4ed8; }
+.vote-count { font-size: 0.8rem; color: #6b7280; background-color: #e5e7eb; padding: 0.15rem 0.4rem; border-radius: 0.25rem; }
+
+/* Progress Bar */
+.percentage-bar-container {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 999px;
+    height: 6px;
+    overflow: hidden;
+}
+.percentage-bar-fill {
+    background-image: linear-gradient(to left, #3b82f6, #60a5fa); /* גרדיאנט שמתאים לכיוון RTL */
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-message-area { min-height: 2.5rem; }
+.status-message-area.critical-error { 
+    background-color: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; 
+    padding: 1rem; border-radius: 0.5rem; font-weight: 500;
+}
+
+.button-primary { background-image: linear-gradient(to right, #2563eb 0%, #1d4ed8 100%); }
+.button-primary:hover { background-image: linear-gradient(to right, #1d4ed8 0%, #1e3a8a 100%); }
+.button-secondary { background-image: linear-gradient(to right, #10b981 0%, #059669 100%); }
+.button-secondary:hover { background-image: linear-gradient(to right, #059669 0%, #047857 100%); }
+
+.error-card { border-left: 5px solid #ef4444 !important; background-color: #fff5f5 !important; }
+.error-card .question-header { color: #b91c1c !important; }
+.error-card .error-details { color: #c2410c; font-weight: 500; }

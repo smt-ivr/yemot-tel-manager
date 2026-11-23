@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מקודד ומפענח תווים</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #1f2937;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+            font-family: monospace;
+            direction: ltr; /* שומר על כיוון משמאל לימין לתווים באנגלית וקידוד */
+        }
+        .buttons-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-action {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-action:hover {
+            background-color: #2563eb;
+        }
+        .btn-copy {
+            background-color: #10b981;
+            color: white;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .btn-copy:hover {
+            background-color: #059669;
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: fixed;
+            z-index: 1;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 15px;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>מפענח ומקודד תווים</h2>
+        
+        <textarea id="inputText" placeholder="הכנס טקסט כאן (לדוגמה: %D7%9E או טקסט רגיל)..."></textarea>
+        
+        <div class="buttons-group">
+            <button class="btn-action" onclick="decodeText()">פענח (Decode)</button>
+            <button class="btn-action" onclick="encodeText()">קודד (Encode)</button>
+        </div>
+
+        <textarea id="outputText" placeholder="התוצאה תופיע כאן..." readonly></textarea>
+        
+        <button class="btn-copy" onclick="copyResult()">העתק תוצאה</button>
+    </div>
+
+    <div id="toastMessage" class="toast">הטקסט הועתק בהצלחה!</div>
+
+    <script>
+        function decodeText() {
+            const input = document.getElementById('inputText').value;
+            try {
+                const decoded = decodeURIComponent(input);
+                document.getElementById('outputText').value = decoded;
+            } catch (error) {
+                document.getElementById('outputText').value = "שגיאה: הקלט אינו מקודד בפורמט URL תקין.";
+            }
+        }
+
+        function encodeText() {
+            const input = document.getElementById('inputText').value;
+            const encoded = encodeURIComponent(input);
+            document.getElementById('outputText').value = encoded;
+        }
+
+        function copyResult() {
+            const output = document.getElementById('outputText');
+            
+            if (output.value === "") {
+                return; // אין מה להעתיק
+            }
+            
+            output.select();
+            output.setSelectionRange(0, 99999); /* למכשירים ניידים */
+            
+            navigator.clipboard.writeText(output.value).then(() => {
+                showToast();
+            }).catch(err => {
+                console.error('שגיאה בהעתקה: ', err);
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById("toastMessage");
+            toast.className = "toast show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 2500);
+        }
+    </script>
+
+</body>
+</html>

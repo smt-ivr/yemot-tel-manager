@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול מערכת טלפונית</title>
+    <link rel="icon" type="image/png" href="smt.png"> 
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_files.css">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="app-splash-screen" class="splash-overlay">
+        <div class="splash-container">
+            <div class="splash-logo-wrapper">
+                <div class="splash-spinner-ring"></div>
+                <img src="smt.png" alt="Logo" class="splash-img" draggable="false" oncontextmenu="return false;">
+            </div>
+            <div class="splash-text">טוען מערכת...</div>
+        </div>
+    </div>
+
+    <div id="mfa-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-shield-alt"></i> נדרש אימות</h3>
+                <button class="modal-close-btn" onclick="closeMfaModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>המערכת ממתינה לאימות דו-שלבי.</p>
+                <div class="mfa-link-container">
+                    <a id="mfa-link-btn" href="#" target="_blank" class="mfa-btn">
+                        לחץ לאימות
+                    </a>
+                </div>
+                <div class="polling-status"><i class="fas fa-spinner fa-spin"></i> ממתין לאישור...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="session-expired-modal" class="modal-overlay" style="display: none; z-index: 9999;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> שגיאת חיבור</h3>
+                <button class="modal-close-btn" onclick="closeSessionExpiredModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>החיבור לשרת נותק (הטוקן פג תוקף או מנותק). יש להתחבר מחדש.</p>
+                <div class="mfa-link-container">
+                    <button class="mfa-btn" onclick="logout()" style="background: #ef4444; border: none;">התנתק והתחבר</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-screen" class="login-wrapper" style="display: none;">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>ניהול מערכת טלפונית</h2>
+            </div>
+            <div class="tabs">
+                <button id="tab-user-pass" class="tab-link active" onclick="switchTab('user-pass')">מערכת וסיסמה</button>
+                <button id="tab-token" class="tab-link" onclick="switchTab('token-mode')">טוקן</button>
+            </div>
+            <div class="login-body">
+                <div id="login-status" class="status-msg default" style="visibility: visible;">
+                    <span id="login-status-text">יש להכניס פרטי מערכת</span>
+                </div>
+                <div id="user-pass-form">
+                    <div class="input-group">
+                        <label>מספר מערכת</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="username" class="simple-input" placeholder="מספר מערכת">
+                            <i class="fas fa-phone icon-right"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>סיסמה</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" class="simple-input" placeholder="סיסמה">
+                            <i class="fas fa-lock icon-right"></i>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember" checked>
+                        <label for="remember">זכור אותי</label>
+                    </div>
+                    <button id="login-btn" class="submit-btn" onclick="performLogin()">
+                        <span class="btn-loader" style="display:none;"><i class="fas fa-circle-notch fa-spin"></i></span>
+                        <span class="btn-text">התחבר</span>
+                    </button>
+                </div>
+                <div id="token-mode-form" style="display:none;">
+                    <div class="input-group">
+                        <label>טוקן גישה</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="manual-token" class="simple-input" placeholder="הדבק טוקן כאן...">
+                            <i class="fas fa-key icon-right"></i>
+                        </div>
+                    </div>
+                    <button id="token-login-btn" class="submit-btn" onclick="loginWithTokenInput()">
+                        <span class="btn-loader" style="display:none;"><i class="fas fa-circle-notch fa-spin"></i></span>
+                        <span class="btn-text">כניסה</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="dashboard-wrapper" style="display: none;">
+        
+        <header class="main-header">
+            <div class="header-section right">
+                <div class="nav-logo">
+                    <img src="smt.png" alt="SMT Logo" class="header-logo-img" draggable="false" oncontextmenu="return false;">
+                    <div class="brand-text">
+                        <span class="main-title">ניהול מערכת טלפונית</span>
+                        <span class="sub-title">פותח ע"י S.M.T | גירסא: V1.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-section center">
+                <div id="reseller-logo-placeholder"></div>
+                <div class="header-rows-wrapper">
+                    <div id="header-row-top" class="header-row top"></div>
+                    <div id="header-row-bottom" class="header-row bottom"></div>
+                </div>
+            </div>
+
+            <div class="header-section left">
+                <div class="left-box-container">
+                    <div class="user-info-row">
+                        <div class="token-wrapper">
+                            <i class="fas fa-key key-icon"></i>
+                            <input type="password" id="current-token-display" readonly>
+                            <div class="token-actions">
+                                <button onclick="toggleTokenVisibility()" title="הצג טוקן"><i class="fas fa-eye"></i></button>
+                                <div class="sep"></div>
+                                <button id="btnCopyToken" onclick="copyTokenToClipboard()" title="העתק"><i id="iconCopyToken" class="fas fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <button onclick="logout()" class="logout-btn" title="יציאה">
+                            <i class="fas fa-power-off"></i>
+                        </button>
+                    </div>
+                    <div class="bottom-status-row">
+                        <div id="auth-reason-badge" class="auth-badge" style="display:none;">
+                            <span id="auth-reason-text"></span>
+                        </div>
+                        <div id="auth-session-status" class="session-badge" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-layout full-screen-layout">
+            <div class="file-manager-card full-height">
+                <div class="card-header-tabs">
+                    <div id="tab-fm" class="tab-item active" onclick="if(window.switchDashboardTab) switchDashboardTab('fm')"><i class="fas fa-folder-open"></i> סייר קבצים</div>
+                    <div id="tab-conf" class="tab-item" onclick="if(window.switchDashboardTab) switchDashboardTab('conf')"><i class="fas fa-users"></i> חדר ועידה</div>
+                </div>
+                
+                <div id="fm-view" class="card-body" style="display: flex;">
+                    <div class="fm-toolbar">
+                        <div class="fm-breadcrumbs" id="fmBreadcrumbs"></div>
+                        <div class="fm-actions">
+                            <button id="refreshBtn" class="fm-btn-icon" title="רענן"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="fmLoader" class="fm-loader hidden">
+                        <div class="spinner"></div>
+                        <p>טוען נתונים...</p>
+                    </div>
+                
+                    <div class="fm-scroll-container">
+                        <div class="fm-grid" id="fmContainer"></div>
+                    </div>
+                </div>
+
+                <div id="conf-view" class="card-body" style="display: none; padding: 15px; background: #fdfdfd; overflow-y: auto;">
+                    <div class="ymgr-toolbar" style="margin-bottom: 15px; border-radius: 6px; border: 1px solid #eee;">
+                        <div class="ymgr-tools-left">
+                            <label style="font-weight:600; margin-left: 10px;">בחר חדר ועידה:</label>
+                            <select id="confRoomSelect" class="fm-input" style="width:200px; padding:6px;" onchange="if(window.changeConfRoom) changeConfRoom()"></select>
+                        </div>
+                        <div class="ymgr-tools-right">
+                            <button class="fm-btn-secondary" onclick="if(window.confActionBatch) confActionBatch('mute')" title="השתק את כולם"><i class="fas fa-microphone-slash"></i> השתק הכל</button>
+                            <button class="fm-btn-secondary" onclick="if(window.confActionBatch) confActionBatch('unmute')" title="פתח השתקה לכולם"><i class="fas fa-microphone"></i> פתח הכל</button>
+                            <button class="fm-btn-secondary" onclick="if(window.confActionBatch) confActionBatch('lowerhand')" title="הורד ידיים לכולם"><i class="fas fa-hand-paper"></i> הורד ידיים</button>
+                        </div>
+                    </div>
+                    
+                    <div class="ymgr-table-wrapper" style="margin-top:0;">
+                        <table class="ymgr-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:right;">משתתף / מתקשר</th>
+                                    <th style="text-align:right;">הרשאה</th>
+                                    <th style="text-align:right; direction:ltr;">משך זמן</th>
+                                    <th style="text-align:right;">סטטוס מיקרופון</th>
+                                    <th style="text-align:center;">הצבעה (יד)</th>
+                                    <th style="text-align:center;">פעולות</th>
+                                </tr>
+                            </thead>
+                            <tbody id="confTableBody">
+                                <tr><td colspan="6" style="text-align:center; padding:30px; color:#999;">טוען נתונים...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="editorModal" class="fm-modal hidden">
+        <div class="fm-modal-content large-modal">
+            <div class="fm-modal-header">
+                <h3><i class="fas fa-edit"></i> עריכת קובץ</h3>
+                <button class="close-modal-btn" id="xCloseBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="fm-modal-body">
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div><strong>שים לב!</strong> שמירה תדרוס את הקובץ הקיים.</div>
+                </div>
+                <div class="editor-grid">
+                    <div class="form-group">
+                        <label>שם הקובץ:</label>
+                        <input type="text" id="editorFileName" disabled class="fm-input disabled">
+                    </div>
+                    <div class="form-group full-height">
+                        <label>תוכן הקובץ:</label>
+                        <textarea id="editorContent" class="fm-textarea" spellcheck="false"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="fm-modal-footer">
+                <button id="closeEditorBtn" class="fm-btn-secondary">ביטול</button>
+                <button id="saveEditorBtn" class="fm-btn-primary">שמור שינויים</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="audioModal" class="fm-modal hidden">
+        <div class="fm-modal-content audio-modal">
+            <div class="fm-modal-header">
+                <h3><i class="fas fa-music"></i> נגן שמע</h3>
+                <button class="close-modal-btn" id="xCloseAudioBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="fm-modal-body audio-body">
+                <div class="audio-icon-large"><i class="fas fa-compact-disc fa-spin"></i></div>
+                <h4 id="audioFileName" class="audio-title"></h4>
+                
+                <div id="audioPlayerLoader" class="hidden">
+                    <div class="spinner" style="border-color:#ccc; border-top-color:var(--fm-primary); width:30px; height:30px;"></div>
+                    <span style="font-size:0.9rem; color:#666;">טוען קובץ...</span>
+                </div>
+
+                <audio id="audioPlayer" controls controlsList="nodownload" class="main-audio-player"></audio>
+                
+                <div class="audio-actions">
+                    <a id="downloadAudioBtn" href="#" class="fm-btn-secondary" download>
+                        <i class="fas fa-download"></i> הורד קובץ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ymgrModal" class="fm-modal hidden">
+        <div class="fm-modal-content large-modal" style="width: 95%; height: 92vh; max-width: 1400px;">
+            <div class="fm-modal-header">
+                <h3><i class="fas fa-table"></i> צפייה בנתונים (YMGR)</h3>
+                <button class="close-modal-btn" id="xCloseYmgrBtn" onclick="closeYmgrModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="ymgr-toolbar">
+                <div class="ymgr-tools-left">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="ymgrSearchInput" placeholder="חיפוש בטבלה..." onkeyup="filterYmgrTable()">
+                    </div>
+                    <span id="ymgrRowCount" class="ymgr-count">סה"כ שורות: 0</span>
+                </div>
+                <div class="ymgr-tools-right">
+                    <button class="fm-btn-secondary" onclick="refreshYmgrTable()" title="רענן נתונים">
+                        <i class="fas fa-sync-alt"></i> רענן
+                    </button>
+                    <button class="fm-btn-secondary" onclick="printYmgrTable()" title="הדפס טבלה">
+                        <i class="fas fa-print"></i> הדפסה
+                    </button>
+                    <button class="fm-btn-secondary" onclick="downloadYmgrFile('csv')">
+                        <i class="fas fa-file-csv"></i> הורד CSV
+                    </button>
+                    <button class="fm-btn-secondary" onclick="downloadYmgrFile('html')">
+                        <i class="fas fa-file-code"></i> הורד HTML
+                    </button>
+                </div>
+            </div>
+
+            <div class="fm-modal-body table-body">
+                <div id="ymgrTableContainer" class="ymgr-table-wrapper">
+                    </div>
+            </div>
+            
+            <div class="fm-modal-footer">
+                <div style="flex:1; text-align:right; font-size:0.8rem; color:#888; direction:ltr;" id="ymgrFilePathDisplay"></div>
+                <button id="closeYmgrBtn" class="fm-btn-secondary" onclick="closeYmgrModal()">סגור</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="logic_ui.js"></script>
+    <script src="logic_auth.js"></script>
+    <script src="logic_files.js"></script>
+    <script src="logic_listeners.js"></script>
+    <script src="logic_conf.js"></script>
+    <script>
+        const dashboardObserver = new MutationObserver((mutations) => {
+            const dashboard = document.getElementById('dashboard-screen');
+            if (dashboard && dashboard.style.display !== 'none') {
+                const tokenInput = document.getElementById('current-token-display');
+                if (tokenInput && tokenInput.value && window.initFileManager) {
+                    window.initFileManager(tokenInput.value);
+                    
+                    if (window.initRealTimeListeners) {
+                        window.initRealTimeListeners();
+                    }
+
+                    dashboardObserver.disconnect();
+                }
+            }
+        });
+        dashboardObserver.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['style'] });
+    </script>
+</body>
+</html>
